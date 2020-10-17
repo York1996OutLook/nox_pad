@@ -8,7 +8,7 @@ from easydict import EasyDict
 import h5py
 from benchmark import showtime
 class Panel:
-    def __init__(self,panel_type,steps):
+    def __init__(self,panel_type,steps,load_h5=True):
         self.res_w=540
         self.res_h=960
         self.panel_type=panel_type
@@ -32,8 +32,8 @@ class Panel:
 
         self.panel_w=self.end_col-self.start_col
         self.panel_h=self.end_row-self.start_row
-
-        self.load_h5(steps)
+        if load_h5:
+            self.load_h5(steps)
     @showtime
     def load_h5(self,steps):
         f = h5py.File(f"panel_{self.panel_type}/steps_{steps}.h5", 'r')

@@ -48,7 +48,6 @@ def getAggregation(diff1,diff2,diff3,diff4,checkerboard):
     aggregation[:, :, 1:] |= horizontal_diff
     aggregation[:, :, 2:] |= horizontal_diff[...,:-1]
     return aggregation
-@jit()
 def getOptimal(_panel):
     # _panel = np.random.randint(1, 5, (2, 5, 6))
     # _panel[:, 1:5, 2] = 1
@@ -66,10 +65,10 @@ def getOptimal(_panel):
     while True:
         num, rs, cs = checkerboard.shape
         diff1 = np.diff(checkerboard, 1, 1)
-        diff2 = np.diff(checkerboard, 2, 1, append=7)  # 行和行相减
+        diff2 = np.diff(checkerboard, 2, 1, append=255)  # 行和行相减
         # 这里为什么要补上6呢，因为6不会和其他的元素重复，不会产生错误的解，如果补的元素和已有元素刚好拼成了三个就会得一分
         diff3 = np.diff(checkerboard, 1, 2)
-        diff4 = np.diff(checkerboard, 2, 2, append=7)  # 列和列相减
+        diff4 = np.diff(checkerboard, 2, 2, append=255)  # 列和列相减
         # _score = ((diff1 == 0) & (diff2 == 0)).sum((1, 2)) + ((diff3 == 0) & (diff4 == 0)).sum((1, 2))
         aggregation=getAggregation(diff1,diff2,diff3,diff4,checkerboard)#三连的位置用True替换
         result=up_down(aggregation,checkerboard)#得到所有元素下降的结果
@@ -179,7 +178,6 @@ def showtime(func):
         return result
     return wrapper
 
-@jit
 def getMovesFromH5(init_balls,p:Panel,start_filter=None):
     """
        :param init_balls: 初始面板
@@ -187,7 +185,6 @@ def getMovesFromH5(init_balls,p:Panel,start_filter=None):
        :param start_filter
        :return: 返回最佳的move
        """
-
     # start_time = time.time()
     if start_filter is not None:
         start_points=p.start_points[start_filter]
@@ -201,10 +198,10 @@ def getMovesFromH5(init_balls,p:Panel,start_filter=None):
 
     # print("找出所有解耗时%s" % (time.time() - start_time))
 
-    # start_time = time.time()
+    start_time = time.time()
     optimal_index, optimal_combo ,best_balls= getOptimal(all_panel)
-    # print("求最优解耗时:", time.time() - start_time)
-    # print(f"共消除了{optimal_combo}个")
+    print("求最优解耗时:", time.time() - start_time)
+    print(f"共消除了{optimal_combo}个")
     end_point=historys[optimal_index][-1]
     return len(historys),start_points[optimal_index],historys[optimal_index], best_balls, optimal_combo,end_point
 

@@ -7,7 +7,6 @@
 from utils import *
 import config
 from config import Panel
-@jit()
 def doPuzzle(cur_balls,cur_panel):
     all_path = []
 
@@ -33,7 +32,7 @@ if __name__ == '__main__':
     import utils
 
     cats=len(os.listdir('classes'))
-    panel=Panel(panel_type='56',steps=9)
+    panel=Panel(panel_type='56',steps=10)
     valid_mask=get_mask()
     gt_imgs=get_all_type_img(classes=cats,mask=valid_mask)
 
@@ -41,7 +40,7 @@ if __name__ == '__main__':
         balls = get_balls(gt_dict=gt_imgs,
                           p=panel,
                           mask=valid_mask,
-                          shot=False,
+                          shot=True,
                           cats=cats,)
         print(balls)
         doPuzzle(balls, panel)
